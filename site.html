@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robo Automatico - Automatize seus Links de Afiliado do Mercado Livre</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #13131a;
+            --surface2: #1a1a24;
+            --primary: #ffe600;
+            --primary-glow: rgba(255, 230, 0, 0.25);
+            --text: #e8e8ed;
+            --text-secondary: #a0a0b8;
+            --accent: #00d4aa;
+            --accent-glow: rgba(0, 212, 170, 0.3);
+            --whatsapp: #25D366;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 8px;
+            --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.5);
+            --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font);
+            background:
+                radial-gradient(circle at 15% 8%, rgba(255, 230, 0, 0.12), transparent 30%),
+                radial-gradient(circle at 85% 88%, rgba(0, 212, 170, 0.12), transparent 32%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.035;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            z-index: 10;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.78);
+            position: sticky;
+            top: 0;
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.18rem;
+            color: #1a1a0a;
+            box-shadow: 0 8px 24px var(--primary-glow);
+        }
+
+        .nav-cta {
+            background: var(--primary);
+            color: #1a1a0a;
+            border: none;
+            min-height: 42px;
+            padding: 0 20px;
+            border-radius: var(--radius);
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-cta:hover {
+            background: #fff;
+            box-shadow: 0 8px 28px var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding: 70px 0 50px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-weight: 850;
+            letter-spacing: 0;
+            line-height: 1.15;
+            margin-bottom: 18px;
+            animation: fadeInUp 0.7s ease-out 0.1s both;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--primary) 0%, #ffb800 50%, #ff8c00 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto 36px;
+            animation: fadeInUp 0.7s ease-out 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 0.7s ease-out 0.3s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 54px;
+            padding: 0 28px;
+            border-radius: var(--radius);
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #1a1a0a;
+            box-shadow: 0 12px 35px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            background: #fff;
+            box-shadow: 0 18px 45px rgba(255, 230, 0, 0.45);
+            transform: translateY(-3px);
+        }
+
+        .btn-arrow {
+            transition: transform 0.25s ease;
+        }
+
+        .btn:hover .btn-arrow {
+            transform: translateX(3px);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mockup-section {
+            position: relative;
+            z-index: 1;
+            padding: 10px 0 50px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .mockup-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 760px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .mockup-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .mockup-dot.red { background: #ff5f56; }
+        .mockup-dot.yellow { background: #ffbd2e; }
+        .mockup-dot.green { background: #27c93f; }
+
+        .mockup-title {
+            margin-left: 10px;
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        .mockup-body {
+            background: #0d0d16;
+            border-radius: var(--radius);
+            padding: 20px;
+            font-family: Consolas, "SF Mono", monospace;
+            font-size: 0.9rem;
+            color: #c0c0d0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.7;
+        }
+
+        .mockup-body .url-original { color: #ff6b6b; }
+        .mockup-body .url-afiliado { color: #00d4aa; }
+        .mockup-body .arrow-symbol { color: var(--primary); }
+        .mockup-body .tag { color: #8888aa; }
+
+        .features {
+            position: relative;
+            z-index: 1;
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            font-weight: 850;
+            letter-spacing: 0;
+            margin-bottom: 8px;
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            background: var(--surface2);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-icon.purple { background: rgba(140, 100, 255, 0.12); color: #b89fff; }
+        .feature-icon.green { background: rgba(0, 212, 170, 0.12); color: var(--accent); }
+        .feature-icon.whatsapp { background: rgba(37, 211, 102, 0.12); color: var(--whatsapp); }
+        .feature-icon.blue { background: rgba(80, 160, 255, 0.12); color: #7ab8ff; }
+
+        .feature-card h3 {
+            font-size: 1.15rem;
+            font-weight: 750;
+            margin-bottom: 6px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        .download-section {
+            position: relative;
+            z-index: 1;
+            padding: 40px 0 80px;
+            text-align: center;
+        }
+
+        .download-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 44px 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius);
+            padding: 1px;
+            background: linear-gradient(135deg, var(--primary), transparent 50%, var(--accent));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .download-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background: rgba(255, 230, 0, 0.1);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .download-card h3 {
+            font-size: 1.6rem;
+            font-weight: 850;
+            margin-bottom: 6px;
+        }
+
+        .download-card .version {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .btn-download {
+            background: var(--accent);
+            color: #051510;
+            font-size: 1.1rem;
+            min-height: 56px;
+            padding: 0 36px;
+            border-radius: var(--radius);
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            box-shadow: 0 12px 35px var(--accent-glow);
+        }
+
+        .btn-download:hover {
+            background: #00f0c0;
+            box-shadow: 0 18px 45px rgba(0, 212, 170, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .download-card .info-text {
+            margin-top: 16px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 24px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1a2a1f;
+            color: #b0f0c0;
+            border: 1px solid rgba(0, 212, 170, 0.4);
+            padding: 14px 24px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 999;
+            transition: transform 0.35s ease;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 18px; }
+            .nav-inner { padding: 0 18px; }
+            .hero { padding: 48px 0 38px; }
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .btn, .btn-download { width: 100%; }
+            .mockup-card { padding: 18px; }
+            .mockup-body { font-size: 0.78rem; padding: 14px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .section-title h2 { font-size: 1.7rem; }
+            .nav-cta { padding: 0 14px; font-size: 0.82rem; }
+            .logo { font-size: 1.08rem; }
+            .logo-icon { width: 32px; height: 32px; font-size: 1rem; }
+            .toast { width: calc(100% - 28px); justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="toast" id="toast">Abrindo a pagina do GitHub.</div>
+
+    <header>
+        <div class="nav-inner">
+            <a href="#" class="logo">
+                <div class="logo-icon">R</div>
+                Robo Automatico
+            </a>
+            <a href="#download" class="nav-cta">Baixar Gratis</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>
+                    Transforme links do<br>Mercado Livre em<br>
+                    <span class="highlight">links de afiliado</span> em segundos
+                </h1>
+                <p>
+                    Robo inteligente que busca produtos, converte links e envia diretamente pelo WhatsApp. Automatize sua rotina de afiliado e venda mais.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#download" class="btn btn-primary">
+                        Baixar Robo Agora
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="mockup-section">
+            <div class="container">
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <span class="mockup-dot red"></span>
+                        <span class="mockup-dot yellow"></span>
+                        <span class="mockup-dot green"></span>
+                        <span class="mockup-title">Robo Automatico - Terminal</span>
+                    </div>
+                    <div class="mockup-body">
+<span class="tag">$</span> <span style="color:#b89fff;">Buscando produtos relevantes...</span><br>
+<span class="tag">$</span> <span class="url-original">https://www.mercadolivre.com.br/smartphone-xiaomi-12-256gb</span>
+<span class="arrow-symbol">  →  </span>
+<span class="url-afiliado">https://www.mercadolivre.com.br/afiliado/redirect?url=smartphone-xiaomi-12-256gb&amp;aff_id=SEU_ID</span><br>
+<span style="color:#25D366;">Enviando link afiliado para WhatsApp...</span><br>
+<span style="color:#666;">Produto processado, link convertido e enviado!</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="recursos">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Por que usar o Robo Automatico?</h2>
+                    <p>Automatize sua rotina de afiliado e foque no que realmente importa: vender mais.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon purple">🔎</div>
+                        <h3>Busca produtos relevantes</h3>
+                        <p>Encontre automaticamente os produtos mais vendidos do Mercado Livre para divulgar.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon green">↻</div>
+                        <h3>Conversao instantanea</h3>
+                        <p>Transforme qualquer link de produto em link de afiliado com um clique.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon whatsapp">💬</div>
+                        <h3>Envio direto WhatsApp</h3>
+                        <p>Compartilhe o link afiliado diretamente no WhatsApp dos seus clientes, sem sair do robo.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon blue">✓</div>
+                        <h3>Instalacao local</h3>
+                        <p>O executavel roda no seu computador. Baixe o instalador e siga as etapas do Windows.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="download-section" id="download">
+            <div class="container">
+                <div class="download-card">
+                    <div class="download-icon">↓</div>
+                    <h3>Robo Automatico</h3>
+                    <p class="version">Pagina oficial no GitHub</p>
+                    <a href="https://github.com/silviamariavasco-create/Robo-dos-Afiliados" target="_blank" rel="noopener" class="btn-download" id="downloadBtn">
+                        Baixar Agora
+                    </a>
+                    <p class="info-text">Voce sera redirecionado para a pagina oficial do projeto no GitHub.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>2026 Robo Automatico. Esta ferramenta nao e afiliada ao Mercado Livre.</p>
+        </div>
+    </footer>
+
+    <script>
+        const downloadBtn = document.getElementById("downloadBtn");
+        const toast = document.getElementById("toast");
+
+        downloadBtn.addEventListener("click", () => {
+            toast.textContent = "Abrindo a pagina do GitHub para baixar o Robo Automatico.";
+            toast.classList.add("show");
+            clearTimeout(toast.hideTimer);
+            toast.hideTimer = setTimeout(() => {
+                toast.classList.remove("show");
+            }, 4000);
+        });
+
+        window.addEventListener("scroll", () => {
+            const header = document.querySelector("header");
+            header.style.boxShadow = window.scrollY > 20 ? "0 4px 30px rgba(0,0,0,0.5)" : "none";
+        });
+    </script>
+</body>
+</html>
